@@ -480,3 +480,139 @@ footer {
     padding: 25px;
     font-size: 14px;
 }
+
+/* ====
+   LOGIN 
+===== */
+
+.body-login {
+    background-color: #f1f8e9;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+/* Container centralizado */
+.login-container {
+    width: 100%;
+    max-width: 400px;
+}
+
+/* Caixa branca do formulário */
+.login-box {
+    background: white;
+    padding: 40px 30px;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(46, 125, 50, 0.1);
+    border-top: 6px solid #2e7d32;
+    text-align: center;
+}
+
+.login-logo {
+    font-size: 32px;
+    font-weight: bold;
+    color: #2e7d32;
+    margin-bottom: 10px;
+}
+
+.login-subtitle {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 30px;
+    line-height: 1.4;
+}
+
+/* Grupos de campos (Labels e Inputs) */
+.input-group {
+    text-align: left;
+    margin-bottom: 20px;
+}
+
+.input-group label {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 6px;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid #cccccc;
+    border-radius: 6px;
+    font-size: 14px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    outline: none;
+}
+
+/* Efeito de foco verde igual ao estilo do site */
+.input-group input:focus {
+    border-color: #2e7d32;
+    box-shadow: 0 0 0 3px rgba(46, 125, 50, 0.15);
+}
+
+/* Botão de Entrar personalizado */
+.btn-login {
+    width: 100%;
+    background-color: #2e7d32;
+    color: white;
+    border: none;
+    padding: 14px;
+    font-size: 16px;
+    font-weight: bold;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    margin-top: 10px;
+    margin-bottom: 20px;
+}
+
+.btn-login:hover {
+    background-color: #1b5e20;
+}
+
+/* Links do rodapé do login */
+.login-footer {
+    font-size: 13px;
+    color: #666;
+}
+
+.login-footer a {
+    color: #2e7d32;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.login-footer a:hover {
+    text-decoration: underline;
+}
+
+/* ==========================================
+   ALINHAMENTO DA LOGO COM O TEXTO
+========================================== */
+
+/* Ajuste para o topo do Index */
+header .logo {
+    display: flex;
+    align-items: center;
+    gap: 10px; /* Espaço entre a imagem e o texto */
+}
+
+/* Ajuste para a tela de Login */
+.login-logo {
+    display: flex;
+    align-items: center;
+    justify-content: center; /* Centraliza o conjunto no login */
+    gap: 12px;
+    margin-bottom: 10px;
+}
+
+/* Regra mágica que torna a imagem proporcional ao tamanho do texto */
+.logo-img {
+    height: 40px; /* 'em' faz com que a altura acompanhe o tamanho da fonte atual */
+    width: auto;   /* Mantém a proporção original de largura da imagem */
+    object-fit: contain;
+} 
