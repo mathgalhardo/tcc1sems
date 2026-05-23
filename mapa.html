@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Pontos de Coleta - Araçatuba</title>
+
+  <!-- Leaflet -->
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+  />
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      display: flex;
+      height: 100vh;
+      overflow: hidden;
+      background: #f4f4f4;
+    }
+
+    .sidebar {
+      width: 360px;
+      background: white;
+      padding: 20px;
+      overflow-y: auto;
+      border-right: 1px solid #ccc;
+    }
+
+    h1 {
+      margin-bottom: 20px;
+      color: #1f2937;
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 6px;
+      font-weight: bold;
+    }
+
+    input {
+      width: 100%;
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-size: 14px;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      margin-top: 10px;
+      border: none;
+      border-radius: 10px;
+      background: #2563eb;
+      color: white;
+      cursor: pointer;
+      font-size: 15px;
+      transition: 0.2s;
+    }
+
+    button:hover {
+      background: #1d4ed8;
+    }
+
+    .remove-btn {
+      background: #dc2626;
+    }
+
+    .remove-btn:hover {
+      background: #b91c1c;
+    }
+
+    #map {
+      flex: 1;
+      height: 100%;
+    }
+
+    .ponto-card {
+      background: #f9fafb;
+      padding: 12px;
+      border-radius: 10px;
+      margin-top: 15px;
+      border: 1px solid #ddd;
+    }
+
+    .ponto-card h3 {
+      margin-bottom: 8px;
+    }
+
+    .coords {
+      margin-top: 8px;
+      font-size: 13px;
+      color: #555;
+    }
+
+    #qrcode {
+      margin-top: 20px;
+      padding: 10px;
+      background: white;
+      border-radius: 10px;
+      text-align: center;
+    }
+
+    #qrcode img {
+      margin: auto;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="sidebar">
+
+    <h1>Pontos de Coleta</h1>
+
+    <div class="form-group">
+      <label>Bairro</label>
+      <input type="text" id="bairro" placeholder="Digite o bairro">
+    </div>
+
+    <div class="form-group">
+      <label>Rua</label>
+      <input type="text" id="rua" placeholder="Digite a rua">
+    </div>
+
+    <button onclick="adicionarPonto()">
+      Adicionar Ponto
+    </button>
+
+    <button onclick="exportarJSON()">
+      Exportar JSON
+    </button>
+
+    <button onclick="gerarQRCode()">
+      Gerar QR Code
+    </button>
+
+    <div id="qrcode"></div>
+
+    <div id="listaPontos"></div>
+
+  </div>
+
+  <div id="map"></div>
+
+  <!-- Leaflet -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <!-- QRCode.js -->
+<script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
+  <script>
+
+    // Inicializa mapa
+    const map = L.map('map').setView([-21.2089, -50.4321], 13);
+
+    // Camada OpenStreetMap
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; OpenStreetMap'
+    }).addTo(map);
+
+    let pontos = [];
+    let markers = [];
+
+    // Atualiza lista
+    function atualizarLista() {
+
+      const lista = document.getElementById("listaPontos");
+      lista.innerHTML = "";
+
+      pontos.forEach((ponto, index) => {
+
+        const card = document.createElement("div");
+        card.className = "ponto-card";
+
+        card.innerHTML = `
+          <h3>${ponto.rua}</h3>
+
+          <p>
+            <strong>Bairro:</strong> ${ponto.bairro}
+          </p>
+
+          <div class="coords">
+            Lat: ${ponto.latitude}<br>
+            Lng: ${ponto.longitude}
+          </div>
+
+          <button
+            class="remove-btn"
+            onclick="removerPonto(${index})"
+          >
+            Remover
+          </button>
+        `;
+
+        lista.appendChild(card);
+      });
+    }
+
+    // Remove ponto
+    function removerPonto(index) {
+
+      map.removeLayer(markers[index]);
+
+      pontos.splice(index, 1);
+      markers.splice(index, 1);
+
+      atualizarLista();
+    }
+
+    // Adiciona ponto
+    async function adicionarPonto() {
+
+      const bairro = document.getElementById("bairro").value.trim();
+      const rua = document.getElementById("rua").value.trim();
+
+      if (!bairro || !rua) {
+        alert("Preencha bairro e rua.");
+        return;
+      }
+
+      const endereco =
+        `${rua}, ${bairro}, Araçatuba, SP, Brasil`;
+
+      try {
+
+        const response = await fetch(
+          `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(endereco)}`
+        );
+
+        const data = await response.json();
+
+        if (data.length === 0) {
+          alert("Endereço não encontrado.");
+          return;
+        }
+
+        const latitude = parseFloat(data[0].lat);
+        const longitude = parseFloat(data[0].lon);
+
+        const ponto = {
+          bairro,
+          rua,
+          latitude,
+          longitude
+        };
+
+        pontos.push(ponto);
+
+        // Marker
+        const marker = L.marker([latitude, longitude])
+          .addTo(map)
+          .bindPopup(`
+            <strong>${rua}</strong><br>
+            ${bairro}
+          `);
+
+        markers.push(marker);
+
+        // Centraliza mapa
+        map.setView([latitude, longitude], 16);
+
+        atualizarLista();
+
+        // Limpa inputs
+        document.getElementById("bairro").value = "";
+        document.getElementById("rua").value = "";
+
+      } catch (erro) {
+
+        console.error(erro);
+
+        alert("Erro ao buscar localização.");
+      }
+    }
+
+    // Exportar JSON
+    function exportarJSON() {
+
+      const json =
+        JSON.stringify(pontos, null, 2);
+
+      const blob = new Blob(
+        [json],
+        { type: "application/json" }
+      );
+
+      const url =
+        URL.createObjectURL(blob);
+
+      const a =
+        document.createElement("a");
+
+      a.href = url;
+      a.download = "pontos-coleta.json";
+
+      a.click();
+
+      URL.revokeObjectURL(url);
+    }
+
+    // Gerar QR Code
+    async function gerarQRCode() {
+
+  const container =
+    document.getElementById("qrcode");
+
+  container.innerHTML = "";
+
+  if (pontos.length === 0) {
+
+    alert("Nenhum ponto cadastrado.");
+    return;
+  }
+
+  // Dados JSON
+  const dados = {
+    tipo: "pontos-coleta",
+    cidade: "Araçatuba",
+    quantidade: pontos.length,
+    pontos: pontos
+  };
+
+  const jsonString =
+    JSON.stringify(dados);
+
+  try {
+
+    // Cria canvas
+    const canvas =
+      document.createElement("canvas");
+
+    container.appendChild(canvas);
+
+    // Gera QR
+    await QRCode.toCanvas(canvas, jsonString, {
+      width: 250,
+      margin: 2
+    });
+
+  } catch (erro) {
+
+    console.error(erro);
+
+    alert(
+      "Erro ao gerar QR Code:\n" +
+      erro.message
+    );
+  }
+}
+
+  </script>
+
+</body>
+</html>
