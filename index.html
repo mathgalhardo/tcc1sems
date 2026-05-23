@@ -136,46 +136,30 @@
         <h2>Programa EcoAraçatuba: Da Teoria à Prática</h2>
         <p class="subtitle">Agora que você já sabe como separar seu lixo, encontre um de nossos ecopontos oficiais para fazer sua entrega:</p>
 
-        <div class="mapa-container">
-            <img src="mapa-aracatuba.png" alt="Mapa de EcoPontos em Araçatuba" class="mapa-foto">
+        
+        <div class="mapa-redirecionamento">
+
+    <div class="mapa-card">
+
+        <div class="icone-mapa">
+            🗺️
         </div>
 
-        <div class="pontos-lista">
-            <div class="ponto-item">
-                <div class="ponto-info">
-                    <strong>📍 EcoPonto São José:</strong> Recebe Plásticos (Garrafas PET, embalagens) — 50 pontos/kg.
-                </div>
-                <button class="btn-localizacao" onclick="abrirQrCode('EcoPonto São José', '-21.1978945448339,-50.46474608136044')">Localização</button>
-            </div>
-            
-            <div class="ponto-item">
-                <div class="ponto-info">
-                    <strong>📍 EcoPonto Claudionor Cinti:</strong> Recebe Metais (Latinhas, ferramentas velhas) — 50 pontos/kg.
-                </div>
-                <button class="btn-localizacao" onclick="abrirQrCode('EcoPonto Claudionor Cinti', '-21.226821591747186,-50.47474898707622')">Localização</button>
-            </div>
-            
-            <div class="ponto-item">
-                <div class="ponto-info">
-                    <strong>📍 EcoPonto Fundadores:</strong> Recebe Papéis (Revistas, cadernos, jornais) — 30 pontos/kg.
-                </div>
-                <button class="btn-localizacao" onclick="abrirQrCode('EcoPonto Fundadores', '-21.21176346328413,-50.38596480834968')">Localização</button>
-            </div>
-            
-            <div class="ponto-item">
-                <div class="ponto-info">
-                    <strong>📍 EcoPonto Country:</strong> Recebe Papelão (Caixas e embalagens grossas) — 40 pontos/kg.
-                </div>
-                <button class="btn-localizacao" onclick="abrirQrCode('EcoPonto Country', '-21.218164573927172,-50.41085570867803')">Localização</button>
-            </div>
-            
-            <div class="ponto-item">
-                <div class="ponto-info">
-                    <strong>📍 EcoPonto Lago Azul:</strong> Recebe Óleo de Cozinha Usado (Em garrafa PET) — 60 pontos/litro.
-                </div>
-                <button class="btn-localizacao" onclick="abrirQrCode('EcoPonto Lago Azul', '-21.23804832552932,-50.451374849865296')">Localização</button>
-            </div>
-        </div>
+        <h3>Mapa Interativo EcoTroca</h3>
+
+        <p>
+            Acesse o mapa completo para adicionar,
+            remover e compartilhar pontos de coleta
+            em Araçatuba.
+        </p>
+
+        <a href="mapa.html" class="btn-mapa">
+            Abrir Mapa Interativo
+        </a>
+
+    </div>
+
+</div>
     </section>
 
     <div id="modal-qrcode" class="modal">
@@ -262,39 +246,6 @@
     <footer>
         <p>© 2026 EcoTroca - Projeto do tema sustentabilidade UNIP.</p>
     </footer>
-
-    <script>
-        function abrirQrCode(nomePonto, coordenadas) {
-            const modal = document.getElementById('modal-qrcode');
-            const titulo = document.getElementById('modal-titulo');
-            const imgQrCode = document.getElementById('img-qrcode');
-            const textoCoords = document.getElementById('modal-coordenadas');
-
-            // Agora a API vai transformar apenas o texto das coordenadas em QR Code, sem links
-            const urlQrCodeAPI = "https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=" + encodeURIComponent(coordenadas);
-
-            // Atualiza a interface da janela flutuante (Modal)
-            titulo.innerText = nomePonto;
-            imgQrCode.src = urlQrCodeAPI;
-            textoCoords.innerText = "Coordenadas: " + coordenadas;
-
-            // Abre a janela na tela
-            modal.style.display = "flex";
-        }
-
-        function fecharQrCode() {
-            const modal = document.getElementById('modal-qrcode');
-            modal.style.display = "none";
-        }
-
-        // Fecha a janela se o usuário clicar fora do quadrado branco
-        window.onclick = function(event) {
-            const modal = document.getElementById('modal-qrcode');
-            if (event.target == modal) {
-                modal.style.display = "none";
-            }
-        }
-    </script>
 
 </body>
 </html>
