@@ -616,3 +616,56 @@ header .logo {
     width: auto;   /* Mantém a proporção original de largura da imagem */
     object-fit: contain;
 } 
+
+/* =========================
+   BOTÃO DO MAPA
+========================= */
+
+.mapa-redirecionamento {
+    display: flex;
+    justify-content: center;
+    margin-top: 40px;
+}
+
+.mapa-card {
+    background: white;
+    padding: 40px;
+    border-radius: 16px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+    max-width: 500px;
+    text-align: center;
+    border-top: 6px solid #2e7d32;
+}
+
+.icone-mapa {
+    font-size: 70px;
+    margin-bottom: 20px;
+}
+
+.mapa-card h3 {
+    color: #1b5e20;
+    font-size: 28px;
+    margin-bottom: 15px;
+}
+
+.mapa-card p {
+    color: #666;
+    margin-bottom: 30px;
+    line-height: 1.6;
+}
+
+.btn-mapa {
+    display: inline-block;
+    background: #2e7d32;
+    color: white;
+    text-decoration: none;
+    padding: 14px 28px;
+    border-radius: 10px;
+    font-weight: bold;
+    transition: 0.2s;
+}
+
+.btn-mapa:hover {
+    background: #1b5e20;
+    transform: translateY(-2px);
+}
